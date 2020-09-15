@@ -1,0 +1,1 @@
+export { queryPackage } from "./package";
