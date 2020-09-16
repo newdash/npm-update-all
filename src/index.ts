@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { trimPrefix } from "@newdash/newdash";
+import cliProgress from 'cli-progress';
 import "colors";
 import { program } from "commander";
 import fs from "fs";
@@ -7,7 +8,7 @@ import inquirer from "inquirer";
 import path from "path";
 import process from "process";
 import { queryPackage } from "./api";
-import { getLatestVersion } from "./utils";
+import { DependencyType } from "./types";
 
 const pkgInfo = require("../package.json");
 
@@ -29,15 +30,41 @@ if (module == require.main) {
         const deps = Object.keys(targetPkgJson.dependencies);
         const devDeps = Object.keys(targetPkgJson.devDependencies);
 
+        console.log(`use package.json ${pkgJsonLocation.green}`);
+        console.log(`pulling package information from ${'https://registry.npmjs.org'.green}`);
+
+        const progress = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+        progress.start(deps.length + devDeps.length, 0);
+
         const depsInfo = await Promise.all(deps.map(async dep => {
           const info = await queryPackage(dep);
-          const version = getLatestVersion(info);
-          return { name: info.name, version };
+          progress.increment();
+          const version = info["dist-tags"].latest;
+          return { name: info.name, version, type: DependencyType.dep };
         }));
 
-        for (const dep of depsInfo) {
-          const currentVersion = trimPrefix(targetPkgJson.dependencies[dep.name], "^");
+        const devDepsInfo = await Promise.all(devDeps.map(async dep => {
+          const info = await queryPackage(dep);
+          progress.increment();
+          const version = info["dist-tags"].latest;
+          return { name: info.name, version, type: DependencyType.devDep };
+        }));
+
+        progress.stop();
+
+        for (const dep of [...depsInfo, ...devDepsInfo]) {
+          let currentVersion = '';
+          switch (dep.type) {
+            case DependencyType.dep:
+              currentVersion = trimPrefix(targetPkgJson.dependencies[dep.name], "^");
+              break;
+            case DependencyType.devDep:
+              currentVersion = trimPrefix(targetPkgJson.devDependencies[dep.name], "^");
+              break;
+          }
+
           if (currentVersion !== dep.version) {
+
             const { update } = await inquirer.prompt([{
               name: "update",
               message: `update ${dep.name.green} from ${currentVersion.gray} to ${dep.version.blue} ?`,
@@ -46,12 +73,21 @@ if (module == require.main) {
             }]);
 
             if (update) {
-              targetPkgJson.dependencies[dep.name] = `^${dep.version}`;
+              // write back
+              switch (dep.type) {
+                case DependencyType.dep:
+                  targetPkgJson.dependencies[dep.name] = `^${dep.version}`;
+                  break;
+                case DependencyType.devDep:
+                  targetPkgJson.devDependencies[dep.name] = `^${dep.version}`;
+                  break;
+              }
             }
 
           }
         }
 
+        // sync
         fs.writeFileSync(pkgJsonLocation, JSON.stringify(targetPkgJson, undefined, 2), { encoding: "utf8" });
 
       }

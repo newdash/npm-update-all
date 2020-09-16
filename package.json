@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@newdash/newdash": "^5.13.0",
+    "cli-progress": "^3.8.2",
     "colors": "^1.4.0",
     "commander": "^6.1.0",
     "compare-versions": "^3.6.0",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
+    "@types/cli-progress": "^3.8.0",
     "@types/commander": "^2.12.2",
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.13",
