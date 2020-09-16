@@ -30,8 +30,8 @@ if (module == require.main) {
         const deps = Object.keys(targetPkgJson.dependencies);
         const devDeps = Object.keys(targetPkgJson.devDependencies);
 
-        console.log(`use package.json ${pkgJsonLocation.green}`);
-        console.log(`pulling package information from ${'https://registry.npmjs.org'.green}`);
+        console.log(`Using package.json ${pkgJsonLocation.green}`);
+        console.log(`Pulling package information from ${'https://registry.npmjs.org'.green}`);
 
         const progress = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
         progress.start(deps.length + devDeps.length, 0);
@@ -51,6 +51,8 @@ if (module == require.main) {
         }));
 
         progress.stop();
+
+        let updateCount = 0;
 
         for (const dep of [...depsInfo, ...devDepsInfo]) {
           let currentVersion = '';
@@ -73,6 +75,7 @@ if (module == require.main) {
             }]);
 
             if (update) {
+              updateCount++;
               // write back
               switch (dep.type) {
                 case DependencyType.dep:
@@ -87,8 +90,28 @@ if (module == require.main) {
           }
         }
 
-        // sync
-        fs.writeFileSync(pkgJsonLocation, JSON.stringify(targetPkgJson, undefined, 2), { encoding: "utf8" });
+
+        if (updateCount > 0) {
+          // sync
+          const { confirm } = await inquirer.prompt([{
+            name: "confirm",
+            message: `Confirm write to ${pkgJsonLocation.red} ?`,
+            type: "confirm",
+            default: true,
+          }]);
+
+          if (confirm) {
+            fs.writeFileSync(
+              pkgJsonLocation,
+              JSON.stringify(targetPkgJson, undefined, 2), { encoding: "utf8" }
+            );
+          } else {
+            console.log('Skip update.'.grey);
+          }
+        } else {
+          console.log('Nothing to update.'.grey);
+        }
+
 
       }
       else {

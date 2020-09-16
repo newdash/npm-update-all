@@ -27,7 +27,6 @@
     "cli-progress": "^3.8.2",
     "colors": "^1.4.0",
     "commander": "^6.1.0",
-    "compare-versions": "^3.6.0",
     "inquirer": "^7.3.3"
   },
   "devDependencies": {
@@ -36,11 +35,11 @@
     "@types/commander": "^2.12.2",
     "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.13",
-    "@types/node": "^14.6.4",
+    "@types/node": "^14.10.2",
     "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
-    "commitlint": "^9.1.2",
+    "commitlint": "^11.0.0",
     "eslint": "^7.9.0",
     "husky": "^4.3.0",
     "jest": "^26.4.2",
