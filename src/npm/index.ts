@@ -1,0 +1,1 @@
+export { getRegistry } from "./config";

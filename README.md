@@ -28,3 +28,5 @@ Pulling package information from https://registry.npmjs.org
 ? update typescript from 3.9.7 to 4.0.2 ? Yes
 ? Confirm write to /Users/i337313/repos/odata-v4-parser/package.json ? Yes
 ```
+
+## [CHANGELOG](./CHANGELOG.md)

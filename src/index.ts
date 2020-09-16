@@ -4,11 +4,12 @@ import cliProgress from 'cli-progress';
 import "colors";
 import { program } from "commander";
 import fs from "fs";
-import inquirer from "inquirer";
 import path from "path";
 import process from "process";
 import { queryPackage } from "./api";
+import { getRegistry } from "./npm";
 import { DependencyType } from "./types";
+import { confirm } from "./utils";
 
 const pkgInfo = require("../package.json");
 
@@ -16,20 +17,6 @@ program.version(pkgInfo.version);
 program.option('-d, --debug', 'debug information');
 program.option('-y, --yes', 'skip confirm');
 program.option('-p, --package <location>', 'package json location', "package.json");
-
-async function confirm(message: string, value: boolean) {
-  if (value != undefined) {
-    return value;
-  }
-  const { confirm } = await inquirer.prompt([{
-    name: "confirm",
-    message,
-    type: "confirm",
-    default: true,
-  }]);
-
-  return confirm;
-}
 
 
 if (module == require.main) {
@@ -43,22 +30,23 @@ if (module == require.main) {
         const targetPkgJson = require(pkgJsonLocation);
         const deps = Object.keys(targetPkgJson.dependencies ?? {});
         const devDeps = Object.keys(targetPkgJson.devDependencies ?? {});
+        const registry = await getRegistry();
 
         console.log(`Using package.json ${pkgJsonLocation.green}`);
-        console.log(`Pulling package information from ${'https://registry.npmjs.org'.green}`);
+        console.log(`Pulling package information from ${registry.green}`);
 
         const progress = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
         progress.start(deps.length + devDeps.length, 0);
 
         const depsInfo = await Promise.all(deps.map(async dep => {
-          const info = await queryPackage(dep);
+          const info = await queryPackage(dep, registry);
           progress.increment();
           const version = info["dist-tags"].latest;
           return { name: info.name, version, type: DependencyType.dep };
         }));
 
         const devDepsInfo = await Promise.all(devDeps.map(async dep => {
-          const info = await queryPackage(dep);
+          const info = await queryPackage(dep, registry);
           progress.increment();
           const version = info["dist-tags"].latest;
           return { name: info.name, version, type: DependencyType.devDep };

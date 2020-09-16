@@ -32,8 +32,6 @@ export interface DistTags {
   latest: string;
 }
 
-
-
 export interface Maintainer {
   name: string;
   email: string;
@@ -76,8 +74,8 @@ export interface VersionInfo {
 }
 
 
-export async function queryPackage(packageName: string): Promise<PackageQueryResult> {
-  const res = await fetch(`https://registry.npmjs.org/${packageName}`);
+export async function queryPackage(packageName: string, registry = 'https://registry.npmjs.org/'): Promise<PackageQueryResult> {
+  const res = await fetch(`${registry}${packageName}`);
   const body = await res.json();
   if (res.status != 200) {
     throw new Error(body.error);
