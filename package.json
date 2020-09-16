@@ -2,7 +2,14 @@
   "name": "@newdash/npm-update-all",
   "description": "update all dependencies for project",
   "version": "0.0.1",
-  "bin": "lib/index.js",
+  "bin": {
+    "npm-update-all": "lib/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/newdash/npm-update-all"
+  },
+  "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
     "prebuild": "rimraf lib",
