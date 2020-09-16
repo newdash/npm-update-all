@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/newdash/npm-update-all/compare/v0.0.5...v0.0.6) (2020-09-16)
+
+
+### Features
+
+* optimize package size ([7c72e03](https://github.com/newdash/npm-update-all/commit/7c72e03d20725e9ac7ec00ff22315fc52d143d4e))
+
 ### [0.0.5](https://github.com/newdash/npm-update-all/compare/v0.0.4...v0.0.5) (2020-09-16)
 
 
