@@ -1,4 +1,4 @@
-# npm update all tool
+# npm update all
 
 ![node-test](https://github.com/newdash/npm-update-all/workflows/node-test/badge.svg)
 [![npm (scoped)](https://img.shields.io/npm/v/@newdash/npm-update-all?label=@newdash/npm-update-all)](https://www.npmjs.com/package/@newdash/npm-update-all)
@@ -27,7 +27,7 @@ Pulling package information from https://registry.npmjs.org
 ? update @typescript-eslint/parser from 3.10.1 to 4.1.1 ? Yes
 ? update eslint from 7.7.0 to 7.9.0 ? Yes
 ? update typescript from 3.9.7 to 4.0.2 ? Yes
-? Confirm write to /Users/i337313/repos/odata-v4-parser/package.json ? Yes
+? Confirm write to /Users/TheoSun/repos/odata-v4-parser/package.json ? Yes
 ```
 
 ## [CHANGELOG](./CHANGELOG.md)
