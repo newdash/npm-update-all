@@ -17,6 +17,20 @@ program.option('-d, --debug', 'debug information');
 program.option('-y, --yes', 'skip confirm');
 program.option('-p, --package <location>', 'package json location', "package.json");
 
+async function confirm(message: string, value: boolean) {
+  if (value != undefined) {
+    return value;
+  }
+  const { confirm } = await inquirer.prompt([{
+    name: "confirm",
+    message,
+    type: "confirm",
+    default: true,
+  }]);
+
+  return confirm;
+}
+
 
 if (module == require.main) {
 
@@ -66,15 +80,8 @@ if (module == require.main) {
           }
 
           if (currentVersion !== dep.version) {
-
-            const { update } = await inquirer.prompt([{
-              name: "update",
-              message: `update ${dep.name.green} from ${currentVersion.gray} to ${dep.version.blue} ?`,
-              type: "confirm",
-              default: true,
-            }]);
-
-            if (update) {
+            const confirmMessage = `update ${dep.name.green} from ${currentVersion.gray} to ${dep.version.blue} ?`;
+            if (await confirm(confirmMessage, program.yes)) {
               updateCount++;
               // write back
               switch (dep.type) {
@@ -90,21 +97,15 @@ if (module == require.main) {
           }
         }
 
-
         if (updateCount > 0) {
-          // sync
-          const { confirm } = await inquirer.prompt([{
-            name: "confirm",
-            message: `Confirm write to ${pkgJsonLocation.red} ?`,
-            type: "confirm",
-            default: true,
-          }]);
-
-          if (confirm) {
+          const confirmMessage = `Confirm write to ${pkgJsonLocation.red} ?`;
+          if (confirm(confirmMessage, program.yes)) {
+            // sync
             fs.writeFileSync(
               pkgJsonLocation,
               JSON.stringify(targetPkgJson, undefined, 2), { encoding: "utf8" }
             );
+            console.log("Updated".green);
           } else {
             console.log('Skip update.'.grey);
           }
