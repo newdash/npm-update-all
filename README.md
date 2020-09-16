@@ -1,5 +1,6 @@
 # npm update all tool
 
+![node-test](https://github.com/newdash/npm-update-all/workflows/node-test/badge.svg)
 [![npm (scoped)](https://img.shields.io/npm/v/@newdash/npm-update-all?label=@newdash/npm-update-all)](https://www.npmjs.com/package/@newdash/npm-update-all)
 
 Update **all** dependencies to the latest version.
