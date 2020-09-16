@@ -1,0 +1,10 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### 0.0.2 (2020-09-16)
+
+
+### Features
+
+* init project ([3bbae72](https://github.com/newdash/npm-update-all/commit/3bbae7259bb3708c37f82d89df8e83e30bd6b35f))
