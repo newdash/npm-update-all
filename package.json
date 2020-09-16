@@ -27,7 +27,8 @@
     "cli-progress": "^3.8.2",
     "colors": "^1.4.0",
     "commander": "^6.1.0",
-    "inquirer": "^7.3.3"
+    "inquirer": "^7.3.3",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
@@ -43,7 +44,6 @@
     "eslint": "^7.9.0",
     "husky": "^4.3.0",
     "jest": "^26.4.2",
-    "node-fetch": "^2.6.1",
     "rimraf": "^3.0.2",
     "standard-version": "^9.0.0",
     "ts-jest": "^26.3.0",

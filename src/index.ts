@@ -27,8 +27,8 @@ if (module == require.main) {
       const pkgJsonLocation = path.join(process.cwd(), program.package);
       if (fs.existsSync(pkgJsonLocation)) {
         const targetPkgJson = require(pkgJsonLocation);
-        const deps = Object.keys(targetPkgJson.dependencies);
-        const devDeps = Object.keys(targetPkgJson.devDependencies);
+        const deps = Object.keys(targetPkgJson.dependencies ?? {});
+        const devDeps = Object.keys(targetPkgJson.devDependencies ?? {});
 
         console.log(`Using package.json ${pkgJsonLocation.green}`);
         console.log(`Pulling package information from ${'https://registry.npmjs.org'.green}`);
