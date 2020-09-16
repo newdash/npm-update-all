@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/newdash/npm-update-all/compare/v0.0.4...v0.0.5) (2020-09-16)
+
+
+### Features
+
+* read registry from user config ([2aeba20](https://github.com/newdash/npm-update-all/commit/2aeba202d2b16b4d4c4d39735ef04bc7a5cd0f16))
+* yes skip confirm ([74af74c](https://github.com/newdash/npm-update-all/commit/74af74cdab1038bee50384ab4db954a7eda33832))
+
 ### [0.0.4](https://github.com/newdash/npm-update-all/compare/v0.0.3...v0.0.4) (2020-09-16)
 
 
