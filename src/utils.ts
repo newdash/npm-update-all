@@ -4,6 +4,7 @@ let id = 0;
 
 export async function confirm(message: string, value: boolean) {
   if (value != undefined) {
+    console.log(message + ' ' + 'Yes'.green);
     return value;
   }
   const key = `confirm_${id++}`;
