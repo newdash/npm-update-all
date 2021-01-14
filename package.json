@@ -1,9 +1,10 @@
 {
   "name": "@newdash/npm-update-all",
   "description": "update all dependencies for project",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "bin": {
-    "npm-update-all": "lib/index.js"
+    "npm-update-all": "lib/index.js",
+    "nua": "lib/index.js"
   },
   "repository": {
     "type": "git",
@@ -43,8 +44,8 @@
     "@types/node": "^14.14.20",
     "@types/node-fetch": "^2.5.7",
     "@types/uuid": "^8.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.12.0",
-    "@typescript-eslint/parser": "^4.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
     "commitlint": "^11.0.0",
     "eslint": "^7.17.0",
     "husky": "^4.3.7",
