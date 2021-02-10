@@ -40,21 +40,32 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
 
     for (const dep of [...depsInfo, ...devDepsInfo]) {
       const { parentNode } = dep;
-      const currentVersion = semver.minVersion(parentNode[dep.name]).version;
+      const currentVersion = parentNode[dep.name];
 
-      if (currentVersion !== dep.version) {
-        const confirmMessage = `Update ${dep.type.yellow} ${dep.name.green} from ${currentVersion.gray} to ${dep.version.blue} ?`;
-        if (await confirm(confirmMessage, program.yes)) {
+      if (semver.gt(dep.version, semver.minVersion(currentVersion))) {
+        const matchCurrentVersion = semver.satisfies(dep.version, currentVersion);
+        const confirmMessage = [
+          "Update",
+          dep.type.yellow,
+          dep.name.green,
+          "from",
+          currentVersion.gray,
+          "to",
+          `^${dep.version}`.blue,
+          matchCurrentVersion ? "?" : "(possible break upgrade)?".red
+        ];
+
+        if (await confirm(confirmMessage.join(" "), program.yes, matchCurrentVersion)) {
           updateCount++;
-          // write back
-          parentNode[dep.name] = `^${dep.version}`;
+          parentNode[dep.name] = `^${dep.version}`; // write updated version
         }
+
       }
     }
 
     if (updateCount > 0) {
       const confirmMessage = `Confirm write to ${pkgJsonLocation.red} ?`;
-      if (await confirm(confirmMessage, program.yes)) {
+      if (await confirm(confirmMessage, program.yes, true)) {
         // sync
         fs.writeFileSync(
           pkgJsonLocation,
