@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/newdash/npm-update-all/compare/v0.1.2...v0.1.3) (2021-03-23)
+
+
+### Bug Fixes
+
+* non-exist package update ([6ac6a43](https://github.com/newdash/npm-update-all/commit/6ac6a436047dabeabcd4cec75db79da1a60bb7f2))
+
 ### [0.1.2](https://github.com/newdash/npm-update-all/compare/v0.1.1...v0.1.2) (2021-02-10)
 
 
