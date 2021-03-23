@@ -1,4 +1,6 @@
+import { concurrency } from "@newdash/newdash/concurrency";
 import fetch from "node-fetch";
+import { DEFAULT_REGISTRY } from "../utils";
 
 export interface PackageQueryResult {
   name: string;
@@ -73,8 +75,23 @@ export interface VersionInfo {
   homepage?: string;
 }
 
+export const isPackageExistOnRegistry = concurrency.limit(
+  async (packageName: string, registry = DEFAULT_REGISTRY) => {
+    const res = await fetch(`${registry}${packageName}`);
+    const body = await res.json();
+    if (res.status == 200) {
+      return true;
+    }
+    if (res.status === 404) {
+      return false;
+    }
+    throw new Error(body.error);
+  },
+  2
+);
 
-export async function queryPackage(packageName: string, registry = 'https://registry.npmjs.org/'): Promise<PackageQueryResult> {
+
+export async function queryPackage(packageName: string, registry = DEFAULT_REGISTRY): Promise<PackageQueryResult> {
   const res = await fetch(`${registry}${packageName}`);
   const body = await res.json();
   if (res.status != 200) {

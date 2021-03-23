@@ -1,7 +1,6 @@
 import { concurrency } from "@newdash/newdash/concurrency";
 import fetch from "node-fetch";
-
-const DEFAULT_REGISTRY = 'https://registry.npmjs.org/';
+import { DEFAULT_REGISTRY } from "../utils";
 
 export interface PackageDistQueryResult {
   latest: string;
@@ -11,12 +10,13 @@ export interface PackageDistQueryResult {
 
 export const queryPackageDistTag = concurrency.limit(
   async (packageName: string, registry = DEFAULT_REGISTRY): Promise<PackageDistQueryResult> => {
-    const res = await fetch(`${registry}-/package/${packageName}/dist-tags`);
+    const url = `${registry}-/package/${packageName}/dist-tags`;
+    const res = await fetch(url);
     if (res.status != 200) {
-      throw new Error(await res.text());
+      throw new Error(`fetch ${url} failed: ${await res.text()}`);
     } else {
       return await res.json();
     }
   },
-  5
+  2
 );

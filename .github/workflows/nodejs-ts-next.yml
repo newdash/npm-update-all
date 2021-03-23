@@ -2,16 +2,17 @@ name: node-ts-next-test
 
 on:
   push:
-    branches: '*'
+    branches:
+      - "*"
   pull_request:
-    branches: '*'
+    branches:
+      - "*"
   # daily check at 01:00 AM
   schedule:
-    - cron: '0 1 * * *'
+    - cron: "0 1 * * *"
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -20,25 +21,25 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Cache node modules
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
-        
-    - name: npm install, build, and test
-      run: |
-        npm install
-        npm install typescript@next
-        npm run build --if-present
-        npm run coverage
-      env:
-        CI: true
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm install typescript@next
+          npm run build --if-present
+          npm run coverage
+        env:
+          CI: true
