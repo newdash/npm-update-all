@@ -18,5 +18,5 @@ export const queryPackageDistTag = concurrency.limit(
       return await res.json();
     }
   },
-  2
+  5
 );
