@@ -87,7 +87,7 @@ export const isPackageExistOnRegistry = concurrency.limit(
     }
     throw new Error(body.error);
   },
-  2
+  5
 );
 
 
