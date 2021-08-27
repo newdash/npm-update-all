@@ -94,8 +94,11 @@ export const isPackageExistOnRegistry = concurrency.limit(
 
 
 export async function queryPackage(packageName: string, registry = DEFAULT_REGISTRY): Promise<PackageQueryResult> {
-  const res = await retry(() => fetch(`${registry}/${packageName}`), 3)(); // retry 3 times
-  const body = await res.json();
+  const { res, body } = await retry(async () => {
+    const res = await fetch(`${registry}/${packageName}`);
+    return { res, body: await res.json() };
+  }, 3)(); // retry 3 times
+
   if (res.status != 200) {
     throw new Error(body.error);
   }

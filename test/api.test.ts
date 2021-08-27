@@ -13,7 +13,7 @@ describe('API Test Suite', () => {
 
   it('should raise error when not found', async () => {
 
-    await expect(() => queryPackage("@newdash/not-exist-package")).rejects.tothrow("Not found");
+    await expect(() => queryPackage("@newdash/not-exist-package")).rejects.toThrow("Not found");
 
   });
 
