@@ -19,7 +19,7 @@ if (module == require.main) {
     try {
 
       program.parse(process.argv);
-      const pkgJsonLocation = path.join(process.cwd(), program.package);
+      const pkgJsonLocation = path.join(process.cwd(), program.opts().package);
       await updateDependencyForPackage(pkgJsonLocation);
 
     } catch (error) {

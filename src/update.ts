@@ -1,15 +1,16 @@
+import { find } from "@newdash/newdash/find";
 import cliProgress from 'cli-progress';
 import "colors";
 import { program } from "commander";
 import fs from "fs";
 import semver from 'semver';
-import { queryPackageDistTag } from "./api";
-import { isPackageExistOnRegistry } from './api/package';
+import { isPackageExistOnRegistry, queryVersions } from './api/package';
 import { getRegistry } from "./npm";
 import { DependencyType } from "./types";
 import { confirm } from "./utils";
 
 export async function updateDependencyForPackage(pkgJsonLocation: string) {
+
   if (fs.existsSync(pkgJsonLocation)) {
     const targetPkgJson = require(pkgJsonLocation);
     const { dependencies, devDependencies } = targetPkgJson;
@@ -30,74 +31,77 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
         version: undefined,
         type: DependencyType.dep,
         parentNode: dependencies,
-        existOnRegistry: true
+        existOnRegistry: true,
       })),
       ...devDeps.map(dep => ({
         name: dep,
         version: undefined,
         type: DependencyType.devDep,
         parentNode: devDependencies,
-        existOnRegistry: true
+        existOnRegistry: true,
       }))
     ];
 
-    const allDepsInfo = await Promise.all(allDeps.map(async dep => {
+    const allDepsInfo: { [version: string]: string[] } = (
+      await Promise.all([...deps, ...devDeps].map(async depName => {
 
-      try {
+        try {
 
-        if (await isPackageExistOnRegistry(dep.name, registry)) {
-          const { latest } = await queryPackageDistTag(dep.name, registry);
-          return { ...dep, version: latest };
+          if (await isPackageExistOnRegistry(depName, registry)) {
+            const versions = await queryVersions(depName, registry);
+            return { depName, versions };
+          }
+
+        } catch (error) {
+          console.error([
+            depName.yellow,
+            "is not existed on registry".red
+          ].join(" "));
+          return { depName, versions: [] };
+        } finally {
+          progress.increment();
         }
-        return { ...dep, existOnRegistry: false };
 
-      } catch (error) {
-        throw error;
-      } finally {
-        progress.increment();
-      }
-
-    }));
+      }))
+    ).reduce((pre, cur) => {
+      pre[cur.depName] = cur.versions;
+      return pre;
+    }, {});
 
     progress.stop();
 
     let updateCount = 0;
 
-    for (const dep of allDepsInfo) {
+    for (const dep of allDeps) {
+
       const { parentNode } = dep;
       const currentVersion = parentNode[dep.name];
+      const remoteVersions = allDepsInfo[dep.name];
 
-      if (dep.existOnRegistry) {
+      const toBeUpdatedVersion = find(remoteVersions.reverse(), remoteVersion => { return semver.gt(remoteVersion, semver.minVersion(currentVersion)) && semver.satisfies(remoteVersion, currentVersion); });
 
-        if (semver.gt(dep.version, semver.minVersion(currentVersion))) {
-          const matchCurrentVersion = semver.satisfies(dep.version, currentVersion);
-          const confirmMessage = [
-            "Update",
-            dep.type.yellow,
-            dep.name.green,
-            "from",
-            currentVersion.gray,
-            "to",
-            `^${dep.version}`.blue,
-            matchCurrentVersion ? "?" : "(possible break upgrade)?".red
-          ];
-
-          if (await confirm(confirmMessage.join(" "), program.yes, matchCurrentVersion)) {
-            updateCount++;
-            parentNode[dep.name] = `^${dep.version}`; // write updated version
-          }
-
+      if (toBeUpdatedVersion) {
+        const confirmMessage = [
+          "?".yellow,
+          "Update",
+          dep.type.yellow,
+          dep.name.green,
+          "from",
+          currentVersion.gray,
+          "to",
+          `^${toBeUpdatedVersion}`.blue,
+        ];
+        if (await confirm(confirmMessage.join(" "), program.opts().yes)) {
+          updateCount++;
+          parentNode[dep.name] = `^${toBeUpdatedVersion}`; // write updated version
         }
-      } else {
-        console.warn(`${"?".yellow} Update ${dep.type.yellow} ${dep.name.green} ${"skipped, not exist on registry".grey}`);
       }
-
 
     }
 
     if (updateCount > 0) {
       const confirmMessage = `Confirm write to ${pkgJsonLocation.red} ?`;
-      if (await confirm(confirmMessage, program.yes, true)) {
+      if (await confirm(confirmMessage, program.opts().yes, true)) {
         // sync
         fs.writeFileSync(
           pkgJsonLocation,

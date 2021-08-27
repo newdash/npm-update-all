@@ -1,6 +1,7 @@
-
+// @ts-nocheck
 import * as uuid from "uuid";
 import { queryPackage, queryPackageDistTag } from "../src/api";
+import { queryVersions } from "../src/api/package";
 
 describe('API Test Suite', () => {
 
@@ -12,7 +13,7 @@ describe('API Test Suite', () => {
 
   it('should raise error when not found', async () => {
 
-    await expect(() => queryPackage("@newdash/not-exist-package")).rejects.toThrow("Not found");
+    await expect(() => queryPackage("@newdash/not-exist-package")).rejects.tothrow("Not found");
 
   });
 
@@ -25,6 +26,11 @@ describe('API Test Suite', () => {
 
   it('should raise error when not found', async () => {
     await expect(() => queryPackageDistTag(uuid.v4())).rejects.toThrow(`"Not Found"`);
+  });
+
+  it('should support query versions with sort', async () => {
+    const versions = await queryVersions("typescript");
+    expect(versions.length).toBeGreaterThan(0);
   });
 
 

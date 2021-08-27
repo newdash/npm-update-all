@@ -10,7 +10,7 @@ export interface PackageDistQueryResult {
 
 export const queryPackageDistTag = concurrency.limit(
   async (packageName: string, registry = DEFAULT_REGISTRY): Promise<PackageDistQueryResult> => {
-    const url = `${registry}-/package/${packageName}/dist-tags`;
+    const url = `${registry}/-/package/${packageName}/dist-tags`;
     const res = await fetch(url);
     if (res.status != 200) {
       throw new Error(`fetch ${url} failed: ${await res.text()}`);

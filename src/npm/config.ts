@@ -1,3 +1,4 @@
+// @ts-nocheck
 import registryUrl from "registry-url";
 
 const DEFAULT_REGISTRY = 'https://registry.npmjs.org/';

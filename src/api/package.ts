@@ -1,5 +1,7 @@
 import { concurrency } from "@newdash/newdash/concurrency";
+import { retry } from "@newdash/newdash/retry";
 import fetch from "node-fetch";
+import semver from "semver";
 import { DEFAULT_REGISTRY } from "../utils";
 
 export interface PackageQueryResult {
@@ -77,7 +79,7 @@ export interface VersionInfo {
 
 export const isPackageExistOnRegistry = concurrency.limit(
   async (packageName: string, registry = DEFAULT_REGISTRY) => {
-    const res = await fetch(`${registry}${packageName}`);
+    const res = await fetch(`${registry}/${packageName}`);
     const body = await res.json();
     if (res.status == 200) {
       return true;
@@ -92,10 +94,15 @@ export const isPackageExistOnRegistry = concurrency.limit(
 
 
 export async function queryPackage(packageName: string, registry = DEFAULT_REGISTRY): Promise<PackageQueryResult> {
-  const res = await fetch(`${registry}${packageName}`);
+  const res = await retry(() => fetch(`${registry}/${packageName}`), 3)(); // retry 3 times
   const body = await res.json();
   if (res.status != 200) {
     throw new Error(body.error);
   }
   return body;
 }
+
+export const queryVersions = concurrency.limit(async (packageName: string, registry = DEFAULT_REGISTRY): Promise<Array<string>> => {
+  const packageInfo = await queryPackage(packageName, registry);
+  return semver.sort(Object.keys(packageInfo.versions).filter(version => semver.prerelease(version) === null));
+}, 5);

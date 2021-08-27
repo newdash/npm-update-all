@@ -31,4 +31,4 @@ export async function confirm(message: string, cliConfirmAll: boolean = false, d
   return result[key];
 }
 
-export const DEFAULT_REGISTRY = 'https://registry.npmjs.org/';
+export const DEFAULT_REGISTRY = 'https://registry.npmjs.org';
