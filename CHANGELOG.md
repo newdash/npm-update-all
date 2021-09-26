@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/newdash/npm-update-all/compare/v0.1.4...v0.1.5) (2021-09-26)
+
+
+### Features
+
+* full update ([94c8dd8](https://github.com/newdash/npm-update-all/commit/94c8dd83e66d9ce7923d9d7d8a5e4a9b568a29e3))
+
+
+### Bug Fixes
+
+* ut ([a0dd7c8](https://github.com/newdash/npm-update-all/commit/a0dd7c87fe6213a5c5ce9f1094315ea622b02001))
+
 ### [0.1.4](https://github.com/newdash/npm-update-all/compare/v0.1.3...v0.1.4) (2021-05-17)
 
 ### [0.1.3](https://github.com/newdash/npm-update-all/compare/v0.1.2...v0.1.3) (2021-03-23)
