@@ -25,7 +25,7 @@ if (module == require.main) {
       logger("cli option: %o", program.opts());
       const pkgJsonLocation = path.join(process.cwd(), program.opts().package);
       await updateDependencyForPackage(pkgJsonLocation);
-
+      process.exit(0);
     } catch (error) {
       console.error(error);
     }
