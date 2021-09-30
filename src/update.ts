@@ -2,12 +2,15 @@ import { find } from "@newdash/newdash/find";
 import cliProgress from 'cli-progress';
 import "colors";
 import { program } from "commander";
+import debug from "debug";
 import fs from "fs";
 import semver from 'semver';
 import { isPackageExistOnRegistry, queryVersions } from './api/package';
 import { getRegistry } from "./npm";
 import { DependencyType } from "./types";
 import { confirm } from "./utils";
+
+const logger = debug("@newdash/npm-update-all:update");
 
 export async function updateDependencyForPackage(pkgJsonLocation: string) {
 
@@ -16,6 +19,9 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
     const { dependencies, devDependencies } = targetPkgJson;
 
     const registry = await getRegistry();
+    
+    logger("registry: %o", registry);
+    
     const deps = Object.keys(targetPkgJson.dependencies ?? {});
     const devDeps = Object.keys(targetPkgJson.devDependencies ?? {});
 

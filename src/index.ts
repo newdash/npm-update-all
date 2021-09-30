@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 import "colors";
 import { program } from "commander";
+import debug from "debug";
 import path from "path";
 import process from "process";
 import { updateDependencyForPackage } from "./update";
+
+const logger = debug("@newdash/npm-update-all:main");
 
 const pkgInfo = require("../package.json");
 
@@ -19,6 +22,7 @@ if (module == require.main) {
     try {
 
       program.parse(process.argv);
+      logger("cli option: %o", program.opts());
       const pkgJsonLocation = path.join(process.cwd(), program.opts().package);
       await updateDependencyForPackage(pkgJsonLocation);
 
