@@ -19,9 +19,9 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
     const { dependencies, devDependencies } = targetPkgJson;
 
     const registry = await getRegistry();
-    
+
     logger("registry: %o", registry);
-    
+
     const deps = Object.keys(targetPkgJson.dependencies ?? {});
     const devDeps = Object.keys(targetPkgJson.devDependencies ?? {});
 

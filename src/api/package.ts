@@ -15,17 +15,16 @@ export const isPackageExistOnRegistry = concurrency.limit(
   async (packageName: string, registry = DEFAULT_REGISTRY) => {
     const res = await retry(async () => {
       logger("check package exist or not: %o at %o", packageName, registry);
-      return await fetch(`${registry}/${packageName}/latest`, { timeout: TIMEOUT });
+      return await fetch(`${registry}/${packageName}/latest`, { method: "HEAD", timeout: TIMEOUT });
     }, RETRY_TIMES)();
 
-    const body = await res.json();
     if (res.status == 200) {
       return true;
     }
     if (res.status === 404) {
       return false;
     }
-    throw new Error(body.error);
+    return false;
   },
   API_CONCURRENCY
 );
