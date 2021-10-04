@@ -1,7 +1,7 @@
 {
   "name": "@newdash/npm-update-all",
   "description": "update all dependencies for project",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "bin": {
     "npm-update-all": "lib/index.js",
     "nua": "lib/index.js"
