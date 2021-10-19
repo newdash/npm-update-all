@@ -81,7 +81,7 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
     for (const dep of allDeps) {
 
       const { parentNode } = dep;
-      const currentVersion = parentNode[dep.name];
+      const currentVersion: string = parentNode[dep.name];
       const remoteVersions = allDepsInfo[dep.name];
 
       const toBeUpdatedVersion = find(remoteVersions.reverse(), remoteVersion => { return semver.gt(remoteVersion, semver.minVersion(currentVersion)) && semver.satisfies(remoteVersion, currentVersion); });
@@ -99,7 +99,11 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
         ];
         if (await confirm(confirmMessage.join(" "), program.opts().yes)) {
           updateCount++;
-          parentNode[dep.name] = `^${toBeUpdatedVersion}`; // write updated version
+          if (currentVersion?.startsWith("^")) {
+            parentNode[dep.name] = `^${toBeUpdatedVersion}`; // write updated version
+          } else {
+            parentNode[dep.name] = `~${toBeUpdatedVersion}`;
+          }
         }
       }
 
