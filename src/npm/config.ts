@@ -1,7 +1,7 @@
 // @ts-nocheck
 import registryUrl from "registry-url";
 
-const DEFAULT_REGISTRY = 'https://registry.npmjs.org/';
+const DEFAULT_REGISTRY = "https://registry.npmjs.org/";
 
 async function getRegistry(scope?: string): Promise<string> {
   return new Promise(resolve => {

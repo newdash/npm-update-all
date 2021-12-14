@@ -11,9 +11,9 @@ const logger = debug("@newdash/npm-update-all:main");
 const pkgInfo = require("../package.json");
 
 program.version(pkgInfo.version);
-program.option('-d, --debug', 'debug information');
-program.option('-y, --yes', 'skip confirm');
-program.option('-p, --package <location>', 'package json location', "package.json");
+program.option("-d, --debug", "debug information");
+program.option("-y, --yes", "skip confirm");
+program.option("-p, --package <location>", "package json location", "package.json");
 
 
 if (module == require.main) {

@@ -7,9 +7,8 @@ on:
   pull_request:
     branches:
       - "*"
-  # daily check at 01:00 AM
   schedule:
-    - cron: "0 2 * * *"
+    - cron: "53 12 * * *"
 
 jobs:
   build:
@@ -17,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
         os: [ubuntu-latest, windows-latest]
 
     steps:

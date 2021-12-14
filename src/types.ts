@@ -1,6 +1,7 @@
 
 
 export enum DependencyType {
-  devDep = 'dev dependency',
-  dep = 'dependency'
+  devDep = "dev dependency",
+  peerDep = "peer dependency",
+  dep = "dependency"
 }

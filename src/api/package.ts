@@ -48,7 +48,10 @@ export async function queryPackage(packageName: string, registry = DEFAULT_REGIS
   return body;
 }
 
-export const queryVersions = concurrency.limit(async (packageName: string, registry = DEFAULT_REGISTRY): Promise<Array<string>> => {
-  const packageInfo = await queryPackage(packageName, registry);
-  return semver.sort(Object.keys(packageInfo.versions).filter(version => semver.prerelease(version) === null));
-}, API_CONCURRENCY);
+export const queryVersions = concurrency.limit(
+  async (packageName: string, registry = DEFAULT_REGISTRY): Promise<Array<string>> => {
+    const packageInfo = await queryPackage(packageName, registry);
+    return semver.sort(Object.keys(packageInfo.versions).filter(version => semver.prerelease(version) === null));
+  }, 
+  API_CONCURRENCY
+);

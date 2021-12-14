@@ -10,11 +10,11 @@ export const asyncFilter = async <T = any>(arr: Array<T>, predicate: (value: T) 
 export async function confirm(message: string, cliConfirmAll: boolean = false, defaultValue: boolean = true) {
 
   if (cliConfirmAll === true) {
-    let msg = '?'.green + ' ' + message + ' ';
+    let msg = "?".green + " " + message + " ";
     if (defaultValue) {
-      msg += 'Yes'.green;
+      msg += "Yes".green;
     } else {
-      msg += 'No'.blue;
+      msg += "No".blue;
     }
     console.log(msg);
     return defaultValue;
@@ -31,4 +31,4 @@ export async function confirm(message: string, cliConfirmAll: boolean = false, d
   return result[key];
 }
 
-export const DEFAULT_REGISTRY = 'https://registry.npmjs.org';
+export const DEFAULT_REGISTRY = "https://registry.npmjs.org";

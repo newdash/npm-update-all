@@ -1,11 +1,11 @@
 import { find } from "@newdash/newdash/find";
-import cliProgress from 'cli-progress';
+import cliProgress from "cli-progress";
 import "colors";
 import { program } from "commander";
 import debug from "debug";
 import fs from "fs";
-import semver from 'semver';
-import { isPackageExistOnRegistry, queryVersions } from './api/package';
+import semver from "semver";
+import { isPackageExistOnRegistry, queryVersions } from "./api/package";
 import { getRegistry } from "./npm";
 import { DependencyType } from "./types";
 import { confirm } from "./utils";
@@ -16,20 +16,21 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
 
   if (fs.existsSync(pkgJsonLocation)) {
     const targetPkgJson = require(pkgJsonLocation);
-    const { dependencies, devDependencies } = targetPkgJson;
+    const { dependencies, devDependencies, peerDependencies } = targetPkgJson;
 
     const registry = await getRegistry();
 
     logger("registry: %o", registry);
 
-    const deps = Object.keys(targetPkgJson.dependencies ?? {});
-    const devDeps = Object.keys(targetPkgJson.devDependencies ?? {});
+    const deps = Object.keys(dependencies ?? {});
+    const devDeps = Object.keys(devDependencies ?? {});
+    const peerDeps = Object.keys(peerDependencies ?? {});
 
     console.log(`Using package.json ${pkgJsonLocation.green}`);
     console.log(`Pulling package information from ${registry.green}`);
 
     const progress = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-    progress.start(deps.length + devDeps.length, 0);
+    progress.start(deps.length + devDeps.length + peerDeps.length, 0);
 
     const allDeps = [
       ...deps.map(dep => ({
@@ -44,6 +45,13 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
         version: undefined,
         type: DependencyType.devDep,
         parentNode: devDependencies,
+        existOnRegistry: true,
+      })),
+      ...peerDeps.map(dep => ({
+        name: dep,
+        version: undefined,
+        type: DependencyType.peerDep,
+        parentNode: peerDependencies,
         existOnRegistry: true,
       }))
     ];
@@ -84,7 +92,15 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
       const currentVersion: string = parentNode[dep.name];
       const remoteVersions = allDepsInfo[dep.name];
 
-      const toBeUpdatedVersion = find(remoteVersions.reverse(), remoteVersion => { return semver.gt(remoteVersion, semver.minVersion(currentVersion)) && semver.satisfies(remoteVersion, currentVersion); });
+      const toBeUpdatedVersion = find(
+        remoteVersions.reverse(), 
+        remoteVersion => { 
+          return semver.gt(
+            remoteVersion, 
+            semver.minVersion(currentVersion)
+          ) && semver.satisfies(remoteVersion, currentVersion);
+        }
+      );
 
       if (toBeUpdatedVersion) {
         const confirmMessage = [
@@ -99,10 +115,8 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
         ];
         if (await confirm(confirmMessage.join(" "), program.opts().yes)) {
           updateCount++;
-          if (currentVersion?.startsWith("^")) {
-            parentNode[dep.name] = `^${toBeUpdatedVersion}`; // write updated version
-          } else {
-            parentNode[dep.name] = `~${toBeUpdatedVersion}`;
+          if (["^", "~", "="].includes(currentVersion[0]) ) { // use the original prefix of version
+            parentNode[dep.name] = `${currentVersion[0]}${toBeUpdatedVersion}`;
           }
         }
       }
@@ -119,10 +133,10 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
         );
         console.log(`File ${pkgJsonLocation.green} ${"Updated".green}`);
       } else {
-        console.log('Update Skipped.'.grey);
+        console.log("Update Skipped.".grey);
       }
     } else {
-      console.log('Nothing to update.'.grey);
+      console.log("Nothing to update.".grey);
     }
 
 
