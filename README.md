@@ -31,3 +31,5 @@ Pulling package information from https://registry.npmjs.org
 ```
 
 ## [CHANGELOG](./CHANGELOG.md)
+
+## [LICENSE](./LICENSE)
