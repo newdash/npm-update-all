@@ -5,6 +5,8 @@
 
 Update **all** dependencies to the latest version.
 
+Currently, you can use [`npm update`](https://docs.npmjs.com/cli/v8/commands/npm-update) command as alternative
+
 ## Usage
 
 ```bash
