@@ -42,5 +42,18 @@ jobs:
         env:
           CI: true
 
+      - name: npm link
+        run: npm link
+
+      - name: test cds-mysql
+        run: |
+          git clone --depth=1 https://github.com/Soontao/cds-mysql.git
+          cd cds-mysql && npm-update-all -y
+
+      - name: test cycle-import-check
+        run: |
+          git clone --depth=1 https://github.com/Soontao/cycle-import-check.git
+          cd cycle-import-check && npm-update-all -y
+
       - name: upload coverage
         uses: codecov/codecov-action@v1

@@ -57,7 +57,7 @@ export async function updateDependencyForPackage(pkgJsonLocation: string) {
     ];
 
     const allDepsInfo: { [version: string]: string[] } = (
-      await Promise.all([...deps, ...devDeps].map(async depName => {
+      await Promise.all([...deps, ...devDeps, ...peerDeps].map(async depName => {
 
         try {
 
